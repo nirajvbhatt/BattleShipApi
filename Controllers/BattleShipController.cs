@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using BattleShipApi.Model;
+using BattleShipApi.Services;
 
 namespace BattleShipApi.Controllers
 {
@@ -13,14 +15,14 @@ namespace BattleShipApi.Controllers
     [Route("[controller]")]
     public class BattleShipController : ControllerBase
     {
-        private readonly IBoard _battleShipBoard;
+        private readonly IBattleShipService _battleShipService;
 
         private readonly ILogger<BattleShipController> _logger;
 
-        public BattleShipController(ILogger<BattleShipController> logger, IBoard board)
+        public BattleShipController(ILogger<BattleShipController> logger, IBattleShipService battleShipService)
         {
             _logger = logger;
-            _battleShipBoard = board;
+            _battleShipService = battleShipService;
         }
 
         /// <summary>
@@ -29,8 +31,7 @@ namespace BattleShipApi.Controllers
         [HttpGet]
         public string GetBoard()
         {
-            var rng = new Random();
-            return JsonConvert.SerializeObject(_battleShipBoard.Grid);
+            return _battleShipService.GetBoard();
         }
 
         /// <summary>
@@ -41,7 +42,7 @@ namespace BattleShipApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult PostAddShip([FromBody] AddShipRequest addShipRequest)
         {
-            _battleShipBoard.AddShip(addShipRequest.StartPosition, addShipRequest.EndPosition);
+            _battleShipService.AddShip(addShipRequest.StartPosition, addShipRequest.EndPosition);
             return CreatedAtAction(nameof(GetBoard), new Ship(addShipRequest.StartPosition, addShipRequest.EndPosition));
         }
 
@@ -54,7 +55,7 @@ namespace BattleShipApi.Controllers
         [HttpPatch]
         public bool Attack(Point target)
         {
-            return _battleShipBoard.Attack(target);
+            return _battleShipService.Attack(target);
         }
     }
 

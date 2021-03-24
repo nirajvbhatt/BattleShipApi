@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace BattleShipApi
+namespace BattleShipApi.Model
 {
     public class BoardContext : DbContext
     {

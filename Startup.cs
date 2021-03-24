@@ -12,6 +12,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
+using BattleShipApi.Model;
+using BattleShipApi.Services;
+using BattleShipApi.Middleware;
 
 namespace BattleShipApi
 {
@@ -28,6 +31,7 @@ namespace BattleShipApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IBoard, Board>();
+            services.AddScoped<IBattleShipService, BattleShipService>();
             services.AddDbContext<BoardContext>(options => options.UseInMemoryDatabase("BattleShipAPI"));
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -46,6 +50,8 @@ namespace BattleShipApi
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "BattleShipApi v1"));
             }
+
+            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
 
             app.UseHttpsRedirection();
 
