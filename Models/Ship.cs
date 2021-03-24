@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BattleShipApi
+namespace BattleShipApi.Model
 {
     public class Ship
     {
